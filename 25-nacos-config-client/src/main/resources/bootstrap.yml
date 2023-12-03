@@ -1,0 +1,20 @@
+# nacos配置，Nacos同springcloud-config一样，在项目初始化时，要保证先从配置中心进行配置拉取，拉取配置之后，才能保证项目的正常启动。
+server:
+  port: 8015
+spring:
+  application:
+    name: nacos-config-client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #Nacos服务注册中心地址
+      config:
+        server-addr: localhost:8848 #Nacos作为配置中心地址
+        #file-extension: yaml #指定yaml格式的配置
+        file-extension: yml #测试配置文件名为yml且此处写yml文件是否可以被访问【经过测试，没有问题，即便是nacos1.2版本以前】
+        #group: TEST_GROUP #找TEST_GROUP分组下的配置文件，没有该配置就找默认分组下的该配置文件
+        group: DEV_GROUP #找DEV_GROUP分组下的配置文件，没有该配置就找默认分组下的该配置文件
+        namespace: a0abe6ea-86cd-40f1-9ccd-91da442e478a #test命名空间，注释掉就是用默认命名空间
+        #namespace: a88106bf-1518-42a8-935e-bde7b0039596 #dev命名空间，注释掉就是用默认命名空间
+
+# ${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}

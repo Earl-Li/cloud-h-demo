@@ -1,0 +1,19 @@
+#注册到Zookeeper服务器中的支付服务的服务器端口号
+server:
+  port: 8004
+#数据元
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cloud_h_demo?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    password: Haworthia0715
+    username: root
+
+#服务别名--注册Zookeeper服务注册中心列表的名称
+  application:
+    name: cloud-provider-payment
+  cloud:
+    zookeeper:
+      #一个Zookeeper的ip+端口号
+      connect-string: 192.168.200.132:2181

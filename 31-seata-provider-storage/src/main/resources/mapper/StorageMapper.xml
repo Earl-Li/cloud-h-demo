@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atlisheng.cloud.mapper.StorageMapper">
+    <resultMap id="BaseResultMap" type="com.atlisheng.cloud.entities.Storage">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="product_id" property="productId" jdbcType="BIGINT"/>
+        <result column="total" property="total" jdbcType="INTEGER"/>
+        <result column="used" property="used" jdbcType="INTEGER"/>
+        <result column="residue" property="residue" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--更新库存信息同时更新了两个字段，已用库存和剩余库存-->
+    <update id="decrease">
+        UPDATE t_storage
+        SET used    = used + #{count},
+            residue = residue - #{count}
+        WHERE product_id = #{productId}
+    </update>
+
+</mapper>

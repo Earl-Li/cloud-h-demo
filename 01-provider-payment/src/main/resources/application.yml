@@ -1,0 +1,44 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: service-payment
+  #zipkin相关配置
+  zipkin:
+    #监控的数据要打到9411端口上供图形化显示
+    base-url: http://localhost:9411
+  #Sleuth配置
+  sleuth:
+    sampler:
+      #采样率值介于 0 到 1 之间，1 则表示全部采集，一般用0.5一半采样就够了
+      probability: 1
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cloud_h_demo?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    password: Haworthia0715
+    username: root
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  #所有entities所在的包
+  type-aliases-package: com.atlisheng.cloud.entities
+
+#eureka配置信息
+eureka:
+  client:
+    #将当前服务注册到EurekaServer中
+    register-with-eureka: true
+    #从EurekaServer抓取已有注册信息，默认为true，单节点无所谓，集群必须设置为true配合ribbon使用负载均衡
+    fetch-registry: true
+    service-url:
+      #集群版
+      #defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka
+      #单机版
+      defaultZone: http://eureka7001.com:7001/eureka
+  instance:
+    #actuator设置服务列表Status服务名
+    instance-id: payment8001
+    #actuator设置服务列表Status服务鼠标悬停浏览器左下角显示ip和端口
+    prefer-ip-address: true

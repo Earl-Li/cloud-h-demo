@@ -1,0 +1,17 @@
+server:
+  port: 8014
+
+spring:
+  application:
+    name: nacos-provider-payment
+  cloud:
+    nacos:
+      discovery:
+        #server-addr: localhost:8848 #配置Nacos地址
+        server-addr: 192.168.200.132:1111 #配置Nacos集群地址
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' #暴露要监控的所有端点，actuator中的，雷神springboot最后有讲

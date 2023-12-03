@@ -1,0 +1,31 @@
+server:
+  port: 80 #用户支付下订单的模块用户不应该关心输入哪个端口进行访问，浏览器网页服务的默认端口都是80，只需要输入网址，不需要输入:80,提升用户体验
+Spring:
+  application:
+    name: service-order
+  #zipkin相关配置
+  zipkin:
+    #监控的数据要打到9411端口上供图形化显示
+    base-url: http://localhost:9411
+  #Sleuth配置
+  sleuth:
+    sampler:
+      #采样率值介于 0 到 1 之间，1 则表示全部采集，一般用0.5一半采样就够了
+      probability: 1
+
+#eureka配置信息
+eureka:
+  client:
+    #将当前服务注册到EurekaServer中
+    register-with-eureka: true
+    #从EurekaServer抓取已有注册信息，默认为true，单节点无所谓，集群必须设置为true配合ribbon使用负载均衡
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+      #集群版
+      #defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka
+  instance:
+    #actuator设置服务列表Status服务名
+    instance-id: order80
+    #actuator设置服务列表Status服务鼠标悬停浏览器左下角显示ip和端口
+    prefer-ip-address: true

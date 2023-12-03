@@ -1,0 +1,44 @@
+server:
+  port: 9002
+
+spring:
+  #rabbitmq相关配置
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  application:
+    name:  cloud-config-center #注册进Eureka服务器的微服务名
+  cloud:
+    config:
+      server:
+        git:
+          #uri: git@github.com:Earl-Li/springcloud-config.git #GitHub上面的git仓库名字
+          #https可以访问成功，注意在uri下面配置usrname和password，同时现在应该是访问main而不是master了，2022年GitHub也不支持sha-1了，
+          #uri: https://github.com/Earl-Li/springcloud-config.git #GitHub上面的git仓库名字
+          #uri: git@github.com:Earl-Li/springcloud-config.git #GitHub上面的git仓库名字
+          uri: https://gitee.com/earl-Li/springcloud-config.git #GitHub上面的git仓库名字
+          #远程库的搜索目录
+          search-paths:
+            - springcloud-config
+          #私有库访问需要用户名和密码，公有库访问不需要账户名和密码，为了安全这里不展示用户和密码
+          skip-ssl-validation: true
+          #default-label: dev
+          #default-label: main
+      #远程库的读取分支
+      #label: main
+      #label: dev
+
+#服务注册到eureka地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+
+##rabbitmq相关配置,暴露bus刷新配置的端点
+management:
+  endpoints: #暴露bus刷新配置的端点
+    web:
+      exposure:
+        include: 'bus-refresh'

@@ -1,0 +1,51 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: cloud-gateway
+  #可以写成多种匹配的断言方式，还可以更改直接把uri写成外网的，来直接转发到外部网址【但是我这儿显示的是重定向】
+  #cloud:
+  #  gateway:
+  #    routes:
+  #      - id: payment_routh #payment_route    #路由的ID，没有固定规则但要求唯一，建议配合服务名
+  #        uri: http://localhost:8001          #匹配后提供服务的路由地址，这个uri可以设置成负载均衡uri: lb://service-payment的形式，且可以多次设置
+  #        predicates:
+  #          - Path=/payment/get/**         # 断言，路径相匹配的进行路由
+  #      - id: payment_routh2 #payment_route    #路由的ID，没有固定规则但要求唯一，建议配合服务名
+  #        uri: http://localhost:8001          #匹配后提供服务的路由地址
+  #        predicates:
+  #          - Path=/payment/lb/**         # 断言，路径相匹配的进行路由
+  cloud:
+    gateway:
+      #开启从注册中心动态创建路由的功能，利用微服务名进行路由,即网关从注册中心动态获取集群的ip和端口号，根据负载均衡策略动态生成路由指定要访问服务集群中的一个服务
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: payment_routh #payment_route    #路由的ID，没有固定规则但要求唯一，建议配合服务名
+          #uri: http://localhost:8006          #匹配后提供服务的路由地址
+          uri: lb://service-payment             #需要注意的是uri的协议为lb，表示启用Gateway的负载均衡功能。lb://serviceName是spring cloud gateway在微服务中自动为我们创建的负载均衡uri的根据，uri告知网关该断言下的服务访问采用动态均衡，并告知网关服务集群的名字
+          predicates:
+            #- Path=/payment/hystrix/**         # 断言，路径相匹配的进行路由
+            #- Path=/payment/**                  # 断言，匹配指定路径的去微服务集群中去匹配对应的所有/payment/**路径
+            - Path=/payment/get/{segment},/payment/**                  # 断言，匹配指定路径的去微服务集群中去匹配对应的所有/payment/**路径
+            # 应用场景，要求什么时候上线，但是害怕来不及服务部署，我就提前部署上线，加上访问断言after要求在某个时间点后才能访问
+            #- After=2023-11-03T08:43:51.274+08:00[Asia/Shanghai] #断言，请求路径要匹配网关ip:port//payment/**,且时间要亚洲上海时间8:43分以后才能正常访问,现在时间7:48，还没到指定时间，此时无法访问该地址
+            #- Cookie=username,zzyy             #断言，请求中必须含有名为username的cookie，且值为zzyy
+            #- Header=X-Request-Id,\d+          #断言，请求头中必须有名为X-Request-Id的属性，且值必须为正整数
+            #- Host=**.picture.com,**.world.com  #断言，请求头中的Host属性的属性值必须匹配列表中的一项，其中**表示任意
+            #- Method=GET                        #断言请求方式必须为get
+            #- Query=username,\d+                 #断言，请求参数中必须有属性username，且对应的值必须是正整数才能路由
+          filters:
+            - AddRequestParameter=X-Request-Id,1024 #过滤器工厂会在匹配的请求头加上一对请求头，名称为X-Request-Id值为1024
+
+
+eureka:
+  instance:
+    hostname: cloud-gateway-service
+  client: #服务提供者provider注册进eureka服务列表内
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka

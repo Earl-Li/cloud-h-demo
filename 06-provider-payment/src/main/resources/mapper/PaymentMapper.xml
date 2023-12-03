@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定映射哪个Dao接口-->
+<mapper namespace="com.atlisheng.cloud.dao.PaymentDao">
+    <!--id对应映射的方法，
+        parameterType="Payment"指定参数封装的entity实体类或者基本数据类型
+        useGeneratedKeys="true" Mybatis 配置文件 useGeneratedKeys 参数只针对 insert 语句生效，默认为 false。当设置为
+            true 时，表示如果插入的表以自增列为主键，则允许 JDBC 支持自动生成主键，并可将自动生成的主键返回给实体类的对应属性。
+        keyProperty="id"指定主键值赋值给对象的哪个属性，此处表示将主键值赋值给插值Payment对象的id属性
+        -->
+    <insert id="create" parameterType="Payment" useGeneratedKeys="true" keyProperty="id">
+        insert into payment(serial) values (#{serial});
+    </insert>
+
+    <!--column:数据库字段名，property映射属性名，jdbcType：字段数据类型-->
+    <resultMap id="BaseResultMap" type="com.atlisheng.cloud.entities.Payment">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <id column="serial" property="serial" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getPaymentById" parameterType="Long" resultMap="BaseResultMap">
+        select * from payment where id=#{id};
+    </select>
+</mapper>

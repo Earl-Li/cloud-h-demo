@@ -1,0 +1,35 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: service-hystrix-order
+
+#eureka配置信息
+eureka:
+  client:
+    #将当前服务注册到EurekaServer中
+    register-with-eureka: true
+    #从EurekaServer抓取已有注册信息，默认为true，单节点无所谓，集群必须设置为true配合ribbon使用负载均衡
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 5000
+
+#开启客户调用端的feign对hystrix功能的支持
+feign:
+  hystrix:
+    enabled: true
+
+#使用feign.hystrix.enabled=true,会导致@FeignClient标注下的所有方法都进行hystrix包装，会应用默认的超时时间1s，
+#如果其他地方的时间超过1s，过了1s立刻就会抛异常，立即进入兜底方法，这也是一直调用兜底方法的原因
+#这个时间和ribbon的设置时间无关，改变这个默认时间需要以下配置，这个默认时间大于具体方法配置的时间，就采纳对应方法的超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
